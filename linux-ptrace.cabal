@@ -1,5 +1,5 @@
 name:                linux-ptrace
-version:             0.1.2
+version:             0.1.2.1
 synopsis:            Wrapping of Linux' ptrace(2).
 description:         An interface for using ptrace to inspect the state of other processes, under Linux.
 category:            System
