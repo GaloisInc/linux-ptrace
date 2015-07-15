@@ -16,8 +16,8 @@ module System.Linux.Ptrace.Syscall (
   ptrace_kill,
   ptrace_getregs,
   ptrace_setregs,
-  --ptrace_getfpregs,
-  --ptrace_setfpregs,
+  ptrace_getfpregs,
+  ptrace_setfpregs,
   ptrace_setoptions,
   ptrace_geteventmsg,
   --ptrace_getsiginfo,
@@ -137,11 +137,12 @@ ptrace_setregs pid (X86 regs) = ptraceSet 13 pid regs
 ptrace_setregs pid (X86_64 regs) = ptraceSet 13 pid regs
 
 
-ptrace_getfpregs :: CPid -> IO Cuser_fpregs_struct
-ptrace_getfpregs pid = ptraceGet 14 pid
-ptrace_setfpregs :: CPid -> Cuser_fpregs_struct -> IO ()
-ptrace_setfpregs pid regs = ptraceSet 15 pid regs
-
+ptrace_getfpregs :: CPid -> IO FPRegs
+ptrace_getfpregs pid | sizeOf (0:: RemotePtr()) == 4 = fmap X86FP $ ptraceGet 14 pid
+                     | sizeOf (0:: RemotePtr()) == 8 = fmap X86_64FP $ ptraceGet 14 pid
+ptrace_setfpregs :: CPid -> FPRegs -> IO ()
+ptrace_setfpregs pid (X86FP regs) = ptraceSet 15 pid regs
+ptrace_setfpregs pid (X86_64FP regs) = ptraceSet 15 pid regs
 
 -- x86 only. On x86_64, getfpregs returns this stuff.
 --ptrace_getfpxregs pid = ptraceGet 18 pid
