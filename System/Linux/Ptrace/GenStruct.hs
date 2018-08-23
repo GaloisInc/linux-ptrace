@@ -27,7 +27,11 @@ genStruct name ctors elemType = do
                        [{-tyvars-}]
                        Nothing
                        [RecC name' varsAndTypes]
+#if MIN_VERSION_template_haskell(2,12,0)
+                       [DerivClause Nothing [ConT ''Show]]
+#else
                        [ConT ''Show]
+#endif
 #else
   varsAndTypes <- mapM (\n -> varStrictType (mkName n) (strictType notStrict elemType)) ctors
   let typeDecl :: Dec
