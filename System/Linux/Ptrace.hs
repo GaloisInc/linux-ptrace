@@ -1,7 +1,7 @@
 {-# LANGUAGE PatternGuards #-}
 
 module System.Linux.Ptrace (
-  TracedProcess, pid,
+  TracedProcess(..), pid,
   RemotePtr, castRemotePtr,
 
   traceProcess,
@@ -28,6 +28,11 @@ import System.Posix.Signals
 import System.Posix.Types
 import System.Posix.Waitpid
 import System.IO.MMap
+
+-- Note: We don't hide the constructor, because there exist ptrace()
+-- options that allow you to automatically trace all subprocesses,
+-- in which case the suer must be able to turn their PIDs (received
+-- via waitpid) into `TraceProcess`es.
 
 data TracedProcess = TracedProcess {
   pid :: CPid
