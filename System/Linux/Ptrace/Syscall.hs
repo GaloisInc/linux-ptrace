@@ -149,7 +149,7 @@ ptrace_setfpregs pid (X86_64FP regs) = ptraceSet 15 pid regs
 --ptrace_setfpxregs pid regs = ptraceSet 19 pid regs
 
 
-data Option = TraceSysGood | TraceFork | TraceVFork | TraceClone | TraceExec | TraceVForkDone | TraceExit
+data Option = TraceSysGood | TraceFork | TraceVFork | TraceClone | TraceExec | TraceVForkDone | TraceExit | ExitKill | TraceSeccomp | SuspendSeccomp
 
 optionCode :: Option -> DataArg
 optionCode TraceSysGood = 0x01
@@ -159,6 +159,9 @@ optionCode TraceClone = 0x08
 optionCode TraceExec = 0x10
 optionCode TraceVForkDone = 0x20
 optionCode TraceExit = 0x40
+optionCode TraceSeccomp = 0x80
+optionCode ExitKill = 0x100000
+optionCode SuspendSeccomp = 0x100000
 
 optionsCode :: [Option] -> DataArg
 optionsCode = foldl' (.|.) 0 . map optionCode
